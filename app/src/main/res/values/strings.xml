@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">BookStore</string>
+    <!-- Label for overflow menu option that inserts fake book data into the app [CHAR LIMIT=20] -->
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="Neverland">Neverland</string>
+    <string name="neverland_price">15</string>
+    <string name="neverland_quantity">12</string>
+    <string name="neverland_supplier_name">AB Books</string>
+    <string name="neverland_supplier_phone_nr">55501502</string>
+    <string name="neverland_author">Peter Pan</string>
+    <string name="editor_activity_title_new_book">Add a Book</string>
+    <string name="editor_activity_title_edit_book">Edit Book</string>
+    <string name="editor_insert_book_failed">Error with saving book</string>
+    <string name="editor_insert_book_successful">Book saved</string>
+    <string name="editor_update_book_failed">Error with updating book</string>
+    <string name="editor_update_book_successful">Book updated</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="delete_dialog_msg">Delete this book?</string>
+    <string name="cancel">Cancel</string>
+    <string name="editor_delete_book_failed">Error with deleting book</string>
+    <string name="editor_delete_book_successful">Book deleted</string>
+    <string name="action_delete_all_books">Delete all books</string>
+</resources>
