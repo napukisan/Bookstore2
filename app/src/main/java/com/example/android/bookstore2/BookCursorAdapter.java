@@ -120,22 +120,6 @@ public class BookCursorAdapter extends CursorAdapter {
             @Override
             public void onClick(View view) {
                 activity.addToCart(bookId, Integer.parseInt(bookQuantity));
-
-//                int quantityNumber = cursor.getInt(quantityColumnIndex) - 1;
-//                if (quantityNumber == 0) {
-//                    Toast.makeText(context.getApplicationContext(), "Impossible", Toast.LENGTH_LONG).show();
-//                } else {
-//                    Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, bookId);
-//                    ContentValues values = new ContentValues();
-//                    values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, quantityNumber);
-//                    String selection = BookContract.BookEntry._ID + "=?";
-//                    String[] selectionArgs = new String[]{String.valueOf(bookId)};
-//                    context.getContentResolver().update(currentBookUri, values, selection, selectionArgs);
-//                    Toast.makeText(context.getApplicationContext(), "quantity updated:" + quantityNumber, Toast.LENGTH_SHORT).show();
-                }
-
         });
-
-
     }
 }
