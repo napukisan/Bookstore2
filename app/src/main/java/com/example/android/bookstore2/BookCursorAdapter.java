@@ -38,8 +38,6 @@ import com.example.android.bookstore2.data.BookContract;
  */
 public class BookCursorAdapter extends CursorAdapter {
 
-    public Button addToCartButton;
-
     /**
      * Constructs a new {@link BookCursorAdapter}.
      *
@@ -47,11 +45,8 @@ public class BookCursorAdapter extends CursorAdapter {
      * @param c       The cursor from which to get the data.
      */
 
-    private final CatalogActivity activity;
-
-    public BookCursorAdapter(CatalogActivity context, Cursor c) {
+    public BookCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
-        this.activity = context;
     }
 
     /**
@@ -85,7 +80,7 @@ public class BookCursorAdapter extends CursorAdapter {
         TextView authorTextView = (TextView) view.findViewById(R.id.author_text_view);
         TextView priceTextView = (TextView) view.findViewById(R.id.price_text_view);
         TextView quantityTextView = (TextView) view.findViewById(R.id.quantity_number_text_view);
-        addToCartButton = (Button) view.findViewById(R.id.buy_button);
+        Button addToCartButton = (Button) view.findViewById(R.id.buy_button);
 
         // Find the columns of book attributes that we're interested in
         final int bookId = cursor.getColumnIndex(BookContract.BookEntry._ID);
@@ -110,16 +105,31 @@ public class BookCursorAdapter extends CursorAdapter {
             bookPrice = Double.toString(bookPriceDouble) + "€";
         }
 
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, bookId);
+                ContentValues values = new ContentValues();
+                int currentQuantity = Integer.parseInt(bookQuantity);
+                int updatedQuantity;
+                if (currentQuantity >0){
+                    updatedQuantity = currentQuantity-1;
+                }else{
+                    updatedQuantity = currentQuantity;
+                }
+                values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, updatedQuantity);
+                String selection = BookContract.BookEntry._ID + "=?";
+                String[] selectionArgs = new String[] {String.valueOf(bookId)};
+                int updatedRows = context.getContentResolver().update(currentBookUri, values, selection, selectionArgs);
+                Toast.makeText(context, "quantity updated:" + updatedQuantity + ". Rows updated = " + updatedRows, Toast.LENGTH_SHORT).show();
+                }
+
+        });
+
         // Update the TextViews with the attributes for the current book
         nameTextView.setText(bookName);
         authorTextView.setText(bookAuthor);
         quantityTextView.setText(bookQuantity);
         priceTextView.setText(bookPrice);
-
-        addToCartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activity.addToCart(bookId, Integer.parseInt(bookQuantity));
-        });
     }
 }

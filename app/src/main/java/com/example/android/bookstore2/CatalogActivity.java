@@ -22,7 +22,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -33,9 +32,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.bookstore2.data.BookContract;
 
@@ -53,11 +51,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
      * Adapter for the ListView
      */
     BookCursorAdapter mCursorAdapter;
-
-    /**
-     * Add to cart button
-     */
-    Button addToCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,19 +186,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
         // Callback called when the data needs to be deleted
         mCursorAdapter.swapCursor(null);
-    }
-
-    public void addToCart (long id, int quantity){
-        Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, id);
-        ContentValues values = new ContentValues();
-        int updatedQuantity;
-        if (quantity >0){
-            updatedQuantity = quantity -1;
-        }else{
-            updatedQuantity = quantity;
-        }
-        values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, updatedQuantity);
-        getContentResolver().update(currentBookUri, values, null, null);
     }
 }
 
