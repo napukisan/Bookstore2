@@ -124,10 +124,8 @@ public class BookCursorAdapter extends CursorAdapter {
                 } else {
                     ContentValues values = new ContentValues();
                     values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, quantity);
-                    String selection = BookContract.BookEntry._ID + "=?";
-                    String[] selectionArgs = new String[]{String.valueOf(bookId)};
                     Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, bookId);
-                    context.getContentResolver().update(currentBookUri, values, selection, selectionArgs);
+                    context.getContentResolver().update(currentBookUri, values, null, null);
                 }
             }
 
