@@ -49,7 +49,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
                 + BookContract.BookEntry.COLUMN_BOOK_PRICE + INTEGER_TYPE + NOT_NULL + DEFAULT + "0" + COMMA_SEP
                 + BookContract.BookEntry.COLUMN_BOOK_QUANTITY + INTEGER_TYPE + NOT_NULL + DEFAULT + "0" + COMMA_SEP
                 + BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_NAME + TEXT_TYPE + COMMA_SEP
-                + BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR + INTEGER_TYPE + NOT_NULL + DEFAULT + "0" + ")";
+                + BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR + TEXT_TYPE + NOT_NULL + ")";
 
         db.execSQL(SQL_CREATE_BOOKS_TABLE);
         Log.v("CatalogActivity", "Table created: " + SQL_CREATE_BOOKS_TABLE);

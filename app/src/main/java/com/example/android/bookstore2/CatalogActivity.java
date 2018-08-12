@@ -31,9 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.android.bookstore2.data.BookContract;
 
@@ -108,7 +106,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
      */
     private void insertBook() {
         // Create a ContentValues object where column names are the keys,
-        // and neverland's book attributes are the values.
+        // and Neverland book attributes are the values.
         ContentValues values = new ContentValues();
         values.put(BookContract.BookEntry.COLUMN_BOOK_NAME, getString(R.string.Neverland));
         values.put(BookContract.BookEntry.COLUMN_BOOK_AUTHOR, getString(R.string.neverland_author));

@@ -29,7 +29,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -109,13 +108,14 @@ public class EditorActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
+        //Set up the Phone call button
         final Button phoneCall = (Button) findViewById(R.id.phone_call_button);
 
         phoneCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String phoneNumber = mSupplierPhoneNrEditText.getText().toString();
-                if (phoneNumber.length() >=8 && phoneNumber.length() <= 14){
+                if (phoneNumber.length() >= 8 && phoneNumber.length() <= 14) {
                     Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
                     startActivity(intent);
                 }
@@ -127,11 +127,40 @@ public class EditorActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         mCurrentBookUri = intent.getData();
 
+        // Find all relevant views that we will need to read user input from
+        mNameEditText = (EditText) findViewById(R.id.name_edit_text);
+        mAuthorEditText = (EditText) findViewById(R.id.author_edit_text);
+        mQuantityEditText = (EditText) findViewById(R.id.quantity_number_edit_text);
+        mPriceEditText = (EditText) findViewById(R.id.price_edit_text);
+        mSupplierEditText = (EditText) findViewById(R.id.supplier_edit_text);
+        mSupplierPhoneNrEditText = (EditText) findViewById(R.id.supplier_phone_nr_edit_text);
+        //Buttons to increment/decrement the book quantity number
+        Button mIncrementQuantityButton = (Button) findViewById(R.id.increment_quantity_button);
+        Button mDecrementQuantityButton = (Button) findViewById(R.id.decrement_quantity_button);
+
+
+        //Set up onClickListener for the increment/decrement buttons
+        mDecrementQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                quantityDecrement();
+            }
+        });
+
+        mIncrementQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                quantityIncrement();
+            }
+        });
+
+
         // If the intent DOES NOT contain a book content URI, then we know that we are
         // creating a new book.
         if (mCurrentBookUri == null) {
             // This is a new book, so change the app bar to say "Add a Book"
             setTitle(getString(R.string.editor_activity_title_new_book));
+//            mQuantityTextView.setText(""+0);
 
             // Invalidate the options menu, so the "Delete" menu option can be hidden.
             // (It doesn't make sense to delete a book that hasn't been created yet.)
@@ -145,14 +174,6 @@ public class EditorActivity extends AppCompatActivity implements
             getLoaderManager().initLoader(EXISTING_BOOK_LOADER, null, this);
         }
 
-        // Find all relevant views that we will need to read user input from
-        mNameEditText = (EditText) findViewById(R.id.name_edit_text);
-        mAuthorEditText = (EditText) findViewById(R.id.author_edit_text);
-        mQuantityEditText = (EditText) findViewById(R.id.quantity_edit_text);
-        mPriceEditText = (EditText) findViewById(R.id.price_edit_text);
-        mSupplierEditText = (EditText) findViewById(R.id.supplier_edit_text);
-        mSupplierPhoneNrEditText = (EditText) findViewById(R.id.supplier_phone_nr_edit_text);
-
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
         // or not, if the user tries to leave the editor without saving.
@@ -162,6 +183,36 @@ public class EditorActivity extends AppCompatActivity implements
         mPriceEditText.setOnTouchListener(mTouchListener);
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mSupplierPhoneNrEditText.setOnTouchListener(mTouchListener);
+    }
+
+    /**
+     * Helper methods to increment/decrement the book quantity number
+     */
+    private void quantityDecrement() {
+        String currentQuantityString = mQuantityEditText.getText().toString();
+        int currentQuantity = Integer.parseInt(currentQuantityString);
+        int newQuantity;
+        if (currentQuantity > 0) {
+            if (currentQuantityString.isEmpty()) {
+                newQuantity = 0;
+            } else {
+                newQuantity = currentQuantity - 1;
+            }
+            mQuantityEditText.setText(String.valueOf(newQuantity));
+            mBookHasChanged = true;
+        }
+    }
+
+    private void quantityIncrement() {
+        String currentQuantityString = mQuantityEditText.getText().toString();
+        int newQuantity;
+        if (currentQuantityString.isEmpty()) {
+            newQuantity = 0;
+        } else {
+            newQuantity = Integer.parseInt(currentQuantityString) + 1;
+        }
+        mQuantityEditText.setText(String.valueOf(newQuantity));
+        mBookHasChanged = true;
     }
 
     /**
@@ -175,7 +226,7 @@ public class EditorActivity extends AppCompatActivity implements
         String quantityString = mQuantityEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
         String supplierString = mSupplierEditText.getText().toString().trim();
-        String supplierPhoneNrString = mSupplierPhoneNrEditText.getText().toString().trim();
+        String supplierPhoneNrString = mSupplierPhoneNrEditText.getText().toString();
 
         // Check if this is supposed to be a new book
         // and check if all the fields in the editor are blank
@@ -188,23 +239,24 @@ public class EditorActivity extends AppCompatActivity implements
                 && TextUtils.isEmpty(supplierPhoneNrString)) {
             // Since no fields were modified, we can return early without creating a new book.
             // No need to create ContentValues and no need to do any ContentProvider operations.
+            Toast.makeText(this, "Fill the fields to save a new book", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(nameString)){
-            Toast.makeText(this, "Book need to have a valid title",Toast.LENGTH_LONG).show();
-        }
-        else if (TextUtils.isEmpty(authorString)){
-            Toast.makeText(this, "Book need to have a valid author",Toast.LENGTH_LONG).show();
-        }
-        else if (TextUtils.isEmpty(supplierString)){
-            Toast.makeText(this, "Book need to have a valid supplier name",Toast.LENGTH_LONG).show();
-        }
-        else if (TextUtils.isEmpty(supplierPhoneNrString)){
-            Toast.makeText(this, "Book need to have a valid supplier phone number",Toast.LENGTH_LONG).show();
-        }
-        else if (supplierPhoneNrString.length()<8 || supplierPhoneNrString.length()>14){
-            Toast.makeText(this, "The phone number has to be 8-13 digits",Toast.LENGTH_LONG).show();
-        }else {
+        if (TextUtils.isEmpty(nameString)) {
+            Toast.makeText(this, "Book need to have a valid title", Toast.LENGTH_LONG).show();
+        } else if (TextUtils.isEmpty(authorString)) {
+            Toast.makeText(this, "Book need to have a valid author", Toast.LENGTH_LONG).show();
+        } else if (TextUtils.isEmpty(quantityString)) {
+            Toast.makeText(this, "Book need to have a specified quantity", Toast.LENGTH_LONG).show();
+        } else if (TextUtils.isEmpty(priceString)) {
+            Toast.makeText(this, "Book need to have a valid price", Toast.LENGTH_LONG).show();
+        } else if (TextUtils.isEmpty(supplierString)) {
+            Toast.makeText(this, "Book need to have a valid supplier name", Toast.LENGTH_LONG).show();
+        } else if (TextUtils.isEmpty(supplierPhoneNrString)) {
+            Toast.makeText(this, "Book need to have a valid supplier phone number", Toast.LENGTH_LONG).show();
+        } else if (supplierPhoneNrString.length() < 8 || supplierPhoneNrString.length() > 14) {
+            Toast.makeText(this, "The phone number has to be 8-13 digits", Toast.LENGTH_LONG).show();
+        } else {
 
             // Create a ContentValues object where column names are the keys,
             // and book attributes from the editor are the values.
@@ -212,12 +264,12 @@ public class EditorActivity extends AppCompatActivity implements
             values.put(BookContract.BookEntry.COLUMN_BOOK_NAME, nameString);
             values.put(BookContract.BookEntry.COLUMN_BOOK_AUTHOR, authorString);
             values.put(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_NAME, supplierString);
+            values.put(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR, supplierPhoneNrString);
 
-            // If the quantity, the price and the phone number are not provided by the user, don't try to parse the string into an
+            // If the quantity and the price number are not provided by the user, don't try to parse the string into an
             // integer value. Use 0 by default.
             int quantity = 0;
             double price = 0;
-            long phoneNumber = 0;
 
             if (!TextUtils.isEmpty(quantityString)) {
                 quantity = Integer.parseInt(quantityString);
@@ -228,18 +280,6 @@ public class EditorActivity extends AppCompatActivity implements
                 price = Double.parseDouble(priceString);
             }
             values.put(BookContract.BookEntry.COLUMN_BOOK_PRICE, price);
-
-            if (!TextUtils.isEmpty(supplierPhoneNrString)) {
-                try {
-                    phoneNumber = Long.parseLong(supplierPhoneNrString);
-                }catch (NumberFormatException ex){
-                    Log.v("CatalogActivity", "Invalid input");
-                }
-            }
-
-            values.put(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR, phoneNumber);
-            Log.v("CatalogActivity", "The inserted phone number is: " + phoneNumber);
-
             // Determine if this is a new or existing book by checking if mCurrentBookUri is null or not
             if (mCurrentBookUri == null) {
                 // This is a NEW book, so insert a new book into the provider,
@@ -410,18 +450,18 @@ public class EditorActivity extends AppCompatActivity implements
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             String author = cursor.getString(authorColumnIndex);
-            int quantity = cursor.getInt(quantityColumnIndex);
-            double price = cursor.getDouble(priceColumnIndex);
+            String quantity = Integer.toString(cursor.getInt(quantityColumnIndex));
+            String price = Double.toString(cursor.getDouble(priceColumnIndex));
             String supplier = cursor.getString(supplierColumnIndex);
-            long supplierPhoneNr = cursor.getLong(supplierPhoneNrColumnIndex);
+            String supplierPhoneNr = cursor.getString(supplierPhoneNrColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mAuthorEditText.setText(author);
-            mQuantityEditText.setText(Integer.toString(quantity));
-            mPriceEditText.setText(Double.toString(price));
+            mQuantityEditText.setText(quantity);
+            mPriceEditText.setText(price);
             mSupplierEditText.setText(supplier);
-            mSupplierPhoneNrEditText.setText(Long.toString(supplierPhoneNr));
+            mSupplierPhoneNrEditText.setText(supplierPhoneNr);
         }
     }
 
@@ -498,7 +538,7 @@ public class EditorActivity extends AppCompatActivity implements
      */
     private void deleteBook() {
         // Only perform the delete if this is an existing book.
-        if (mCurrentBookUri!= null) {
+        if (mCurrentBookUri != null) {
             // Call the ContentResolver to delete the book at the given content URI.
             // Pass in null for the selection and selection args because the mCurrentBookUri
             // content URI already identifies the book that we want.

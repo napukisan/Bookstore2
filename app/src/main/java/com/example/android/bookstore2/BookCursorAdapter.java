@@ -15,7 +15,6 @@
  */
 package com.example.android.bookstore2;
 
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.bookstore2.data.BookContract;
 
@@ -37,6 +35,12 @@ import com.example.android.bookstore2.data.BookContract;
  * how to create list items for each row of book data in the {@link Cursor}.
  */
 public class BookCursorAdapter extends CursorAdapter {
+    public TextView nameTextView;
+    public TextView authorTextView;
+    public TextView priceTextView;
+    public TextView quantityTextView;
+    public Button addToCartButton;
+
 
     /**
      * Constructs a new {@link BookCursorAdapter}.
@@ -76,26 +80,31 @@ public class BookCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
         // Find individual views that we want to modify in the list item layout
-        TextView nameTextView = (TextView) view.findViewById(R.id.name_text_view);
-        TextView authorTextView = (TextView) view.findViewById(R.id.author_text_view);
-        TextView priceTextView = (TextView) view.findViewById(R.id.price_text_view);
-        TextView quantityTextView = (TextView) view.findViewById(R.id.quantity_number_text_view);
-        Button addToCartButton = (Button) view.findViewById(R.id.buy_button);
+        nameTextView = (TextView) view.findViewById(R.id.name_text_view);
+        authorTextView = (TextView) view.findViewById(R.id.author_text_view);
+        priceTextView = (TextView) view.findViewById(R.id.price_text_view);
+        quantityTextView = (TextView) view.findViewById(R.id.quantity_number_text_view);
+        addToCartButton = (Button) view.findViewById(R.id.buy_button);
 
         // Find the columns of book attributes that we're interested in
-        final int bookId = cursor.getColumnIndex(BookContract.BookEntry._ID);
         int nameColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_NAME);
         int authorColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_AUTHOR);
         int priceColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_PRICE);
-        final int quantityColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_QUANTITY);
+        int quantityColumnIndex = cursor.getColumnIndex(BookContract.BookEntry.COLUMN_BOOK_QUANTITY);
 
         // Read the book attributes from the Cursor for the current book
-
+        final Long bookId = cursor.getLong(cursor.getColumnIndexOrThrow(BookContract.BookEntry._ID));
         String bookName = cursor.getString(nameColumnIndex);
         String bookAuthor = cursor.getString(authorColumnIndex);
         double bookPriceDouble = cursor.getDouble(priceColumnIndex);
         int bookPriceInt = cursor.getInt(priceColumnIndex);
         final String bookQuantity = cursor.getString(quantityColumnIndex);
+
+        if (Integer.parseInt(bookQuantity)>0){
+            addToCartButton.setActivated(true);
+        }else{
+            addToCartButton.setActivated(false);
+        }
 
         //Check price in order to show decimals only if not equal to 0
         String bookPrice;
@@ -105,24 +114,22 @@ public class BookCursorAdapter extends CursorAdapter {
             bookPrice = Double.toString(bookPriceDouble) + "€";
         }
 
+        //Add listener to the sale button
         addToCartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, bookId);
-                ContentValues values = new ContentValues();
-                int currentQuantity = Integer.parseInt(bookQuantity);
-                int updatedQuantity;
-                if (currentQuantity >0){
-                    updatedQuantity = currentQuantity-1;
-                }else{
-                    updatedQuantity = currentQuantity;
+                int quantity = Integer.parseInt(bookQuantity) - 1;
+                if (quantity < 0) {
+                    addToCartButton.setActivated(false);
+                } else {
+                    ContentValues values = new ContentValues();
+                    values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, quantity);
+                    String selection = BookContract.BookEntry._ID + "=?";
+                    String[] selectionArgs = new String[]{String.valueOf(bookId)};
+                    Uri currentBookUri = ContentUris.withAppendedId(BookContract.BookEntry.CONTENT_URI, bookId);
+                    context.getContentResolver().update(currentBookUri, values, selection, selectionArgs);
                 }
-                values.put(BookContract.BookEntry.COLUMN_BOOK_QUANTITY, updatedQuantity);
-                String selection = BookContract.BookEntry._ID + "=?";
-                String[] selectionArgs = new String[] {String.valueOf(bookId)};
-                int updatedRows = context.getContentResolver().update(currentBookUri, values, selection, selectionArgs);
-                Toast.makeText(context, "quantity updated:" + updatedQuantity + ". Rows updated = " + updatedRows, Toast.LENGTH_SHORT).show();
-                }
+            }
 
         });
 

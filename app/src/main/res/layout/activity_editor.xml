@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <!--Overview Label-->
+    <!--Labels TextViews-->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +18,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_weight="1"
-            android:text="Title"
+            android:text="@string/label_title"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -29,39 +28,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Author"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-
-            android:text="Quantity"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:text="Price" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-
-            android:text="Supplier"
+            android:text="@string/label_author"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -72,13 +39,45 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
 
-            android:text="Supplier \nPhone"
+            android:text="@string/label_quantity"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_price"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+
+            android:text="@string/label_supplier"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+
+            android:text="@string/label_supplier_phone"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
     </LinearLayout>
 
-    <!--Price and Quantity Label-->
+    <!--Values EditTexts-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,8 +89,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="@string/hint_book_name"
             android:imeOptions="actionDone"
-            android:hint="Book Name"
             android:inputType="text" />
 
         <EditText
@@ -100,29 +99,57 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="@string/hint_author"
             android:imeOptions="actionDone"
-            android:hint="Author"
             android:inputType="text" />
 
-        <EditText
-            android:id="@+id/quantity_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:imeOptions="actionDone"
-            android:hint="Quantity"
-            android:inputType="text" />
 
-        <EditText
-            android:id="@+id/price_edit_text"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:imeOptions="actionDone"
-            android:hint="Price"
-            android:inputType="text" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/decrement_quantity_button"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/button_decrement"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/quantity_number_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/hint_0" />
+
+            <Button
+                android:id="@+id/increment_quantity_button"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/button_increment"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/price_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_price"
+                android:imeOptions="actionDone"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/values_euro"
+                android:textSize="20sp" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/supplier_edit_text"
@@ -130,34 +157,35 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="@string/hint_supplier_name"
             android:imeOptions="actionDone"
-            android:hint="Supplier Name"
             android:inputType="text" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/supplier_phone_nr_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="2"
-            android:digits="0,1,2,3,4,5,6,7,8,9"
-            android:hint="Supplier Phone Nr."
-            android:imeOptions="actionDone"
-            android:inputType="phone" />
+            <EditText
+                android:id="@+id/supplier_phone_nr_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_weight="2"
+                android:digits="0123456789"
+                android:hint="@string/hint_supplier_phone_nr"
+                android:imeOptions="actionDone"
+                android:inputType="phone" />
 
             <Button
                 android:id="@+id/phone_call_button"
                 android:layout_width="10dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/ic_action_phone_start"/>
+                android:layout_weight="1"
+                android:background="@drawable/ic_action_phone_start" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * {@link ContentProvider} for Bookstore app.
@@ -172,7 +171,7 @@ public class BookProvider extends ContentProvider {
         }
 
         // Check that the supplier phone number is not null
-        Long supplierPhoneNr = values.getAsLong(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR);
+        String supplierPhoneNr = values.getAsString(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR);
         if (supplierPhoneNr == null) {
             throw new IllegalArgumentException("Book requires a supplier");
         }
@@ -301,8 +300,8 @@ public class BookProvider extends ContentProvider {
         // If the {@link BookEntry#COLUMN_BOOK_SUPPLIER_PHONE_NR} key is present,
         // check that the supplier phone number value is not null.
         if (values.containsKey(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR)) {
-            String supplier = values.getAsString(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR);
-            if (supplier == null) {
+            String supplierPhoneNr = values.getAsString(BookContract.BookEntry.COLUMN_BOOK_SUPPLIER_PHONE_NR);
+            if (supplierPhoneNr == null) {
                 throw new IllegalArgumentException("Book requires a supplier phone number");
             }
         }
